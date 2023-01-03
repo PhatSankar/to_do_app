@@ -19,10 +19,9 @@ class ToDoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.yellow[200]
-      ),
-      padding: const EdgeInsets.all(kDefaultPadding),
+      decoration: BoxDecoration(color: Colors.yellow[200]),
+      padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
       child: Slidable(
         endActionPane: ActionPane(
           motion: StretchMotion(),
@@ -43,23 +42,35 @@ class ToDoTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(kBorderRadius)),
           child: Row(
             children: [
-              Transform.scale(
-                scale: 1.1,
-                child: Checkbox(
-                    value: isSelected,
-                    checkColor: Colors.white,
-                    activeColor: Colors.black,
-                    onChanged: (_) => onSelected()),
+              Expanded(
+                  child: Row(
+                children: [
+                  Transform.scale(
+                    scale: 1.1,
+                    child: Checkbox(
+                        value: isSelected,
+                        checkColor: Colors.white,
+                        activeColor: Colors.black,
+                        onChanged: (_) => onSelected()),
+                  ),
+                  Flexible(
+                      child: Text(
+                    title,
+                    style: TextStyle(
+                        fontSize: kFontSize,
+                        decoration: isSelected
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none),
+                  ))
+                ],
+              )),
+              SizedBox(
+                width: kDefaultPadding,
               ),
-              Flexible(
-                  child: Text(
-                title,
-                style: TextStyle(
-                    fontSize: kFontSize,
-                    decoration: isSelected
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none),
-              ))
+              Icon(
+                Icons.dehaze_sharp,
+                color: Colors.grey[600],
+              )
             ],
           ),
         ),
