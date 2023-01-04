@@ -19,7 +19,6 @@ class ToDoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Colors.yellow[200]),
       padding: const EdgeInsets.symmetric(
           horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
       child: Slidable(
@@ -39,7 +38,9 @@ class ToDoTile extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
               color: Colors.yellow,
-              borderRadius: BorderRadius.circular(kBorderRadius)),
+              borderRadius: BorderRadius.circular(kBorderRadius),
+              border: Border.all(color: Colors.black26),
+          ),
           child: Row(
             children: [
               Expanded(

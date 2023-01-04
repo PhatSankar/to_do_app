@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:reorderables/reorderables.dart';
 import 'package:to_do_app/constants.dart';
 import 'package:to_do_app/pages/home/components/add_dialog.dart';
 import 'package:to_do_app/pages/home/components/to_do_tile.dart';
+import 'package:to_do_app/utils/hive_helper.dart';
+import 'package:to_do_app/utils/proxy_decorator.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List toDolist = [
-    ["Make to do", false],
-    ["Have crush", true]
-  ];
-
+  HiveHelper hiveHelper = HiveHelper();
+  late List toDoList;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    toDoList = hiveHelper.getToDoList();
   }
 
   @override
@@ -35,12 +32,13 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.only(bottom: kDefaultPadding),
         child: ReorderableListView(
+          proxyDecorator: ProxyDecorator,
           onReorder: (oldIndex, newIndex) => reorderTiles(oldIndex, newIndex),
           children: List<Widget>.generate(
-              toDolist.length,
+              toDoList.length,
               (index) => ToDoTile(
-                    title: toDolist[index][0],
-                    isSelected: toDolist[index][1],
+                    title: toDoList[index][0],
+                    isSelected: toDoList[index][1],
                     onSelected: () => onSelectedCheckbox(index),
                     onDelete: (context) => DeleteTask(index),
                     key: UniqueKey(),
@@ -61,15 +59,17 @@ class _HomePageState extends State<HomePage> {
         await showDialog(context: context, builder: (context) => AddDialog());
     if (tempTextController != null) {
       setState(() {
-        toDolist.add([tempTextController.text, false]);
+        toDoList.add([tempTextController.text, false]);
       });
     }
+    hiveHelper.saveToDoList(toDoList);
   }
 
   void DeleteTask(int index) {
     setState(() {
-      toDolist.removeAt(index);
+      toDoList.removeAt(index);
     });
+    hiveHelper.saveToDoList(toDoList);
   }
 
   void reorderTiles(int oldIndex, int newIndex)
@@ -77,15 +77,17 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       if (oldIndex < newIndex)
         newIndex--;
-      final tile = toDolist.removeAt(oldIndex);
-      toDolist.insert(newIndex, tile);
+      final tile = toDoList.removeAt(oldIndex);
+      toDoList.insert(newIndex, tile);
     });
+    hiveHelper.saveToDoList(toDoList);
   }
 
   void onSelectedCheckbox(int index)
   {
     setState(() {
-      toDolist[index][1] = !toDolist[index][1];
+      toDoList[index][1] = !toDoList[index][1];
     });
+    hiveHelper.saveToDoList(toDoList);
   }
 }

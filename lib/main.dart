@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:to_do_app/pages/home/home_page.dart';
 
-void main() {
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  //init Hive
+  await Hive.initFlutter();
+  //Open a box (create a table in db if not exist)
+  await Hive.openBox("ToDoAppBox-Sankar");
+
   runApp(const MyApp());
 }
 
